@@ -1,0 +1,7 @@
+*.png
+*.log
+__pycache__/
+.vscode/
+config.py
+matrixTest.py
+captchaRec.py
