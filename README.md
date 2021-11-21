@@ -1,5 +1,4 @@
-## sjtuAutoSport
-***
+# jAutoVenue
 
 基于python selenium实现的<del> 低鲁棒性的、可靠性不保证的 </del>自用一键预约交大体育场馆脚本.
 
