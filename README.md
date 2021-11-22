@@ -12,8 +12,8 @@ python 3，selenium包，webDriver(代码中使用的是firefox，可任意替�
 在config.py中设定个人的jaccount账号与密码，通过命令行参数与sport.py交互即可查看使用说明，或者设定具体场馆、细分项目、日期、时间，进而实现一键预约。而在云服务器上，可以配合crontab实现自动化预约。
 ```bash
 >>> python3 sport.py --help
-sport.py -d <delta days from today ranging from 0 to 7> -i <venue item name> -t <startTime ranging from 7 to 21> -v <venue name>
-or: sport.py --day=<delta days from today ranging from 0 to 7> --item=<venue item name> --time=<startTime ranging from 7 to 21> --venue=<venue name>
+sport.py -d <delta days from today ranging from 0 to 7 > -i <venue item name> -t <startTime ranging from 7 to 21 > -v <venue name>
+or: sport.py --day=<delta days from today ranging from 0 to 7 > --item=<venue item name> --time=<startTime ranging from 7 to 21 > --venue=<venue name>
 venue-venueItem list:
 子衿街学生活动中心: { 舞蹈, 健身房, 棋牌室, 钢琴, 烘焙, 琴房兼乐器, }
 学生服务中心: { 台球, 健身房, }
