@@ -9,7 +9,37 @@
 python 3，selenium包，webDriver(代码中使用的是firefox，可任意替换为edge、chrome)。
 
 ### 使用方式
-在config.py中设定个人的jaccount账号与密码，在sport.py中配置目的场馆、细分场馆、目标日期、目标时间，而后运行即可。在云服务器上，可以配合crontab实现自动化预约。
+在config.py中设定个人的jaccount账号与密码，通过命令行参数与sport.py交互即可查看使用说明，或者设定具体场馆、细分项目、日期、时间，进而实现一键预约。而在云服务器上，可以配合crontab实现自动化预约。
+```bash
+>>> python3 sport.py --help
+sport.py -d <delta days from today ranging from 0 to 7> -i <venue item name> -t <startTime ranging from 7 to 21> -v <venue name>
+or: sport.py --day=<delta days from today ranging from 0 to 7> --item=<venue item name> --time=<startTime ranging from 7 to 21> --venue=<venue name>
+venue-venueItem list:
+子衿街学生活动中心: { 舞蹈, 健身房, 棋牌室, 钢琴, 烘焙, 琴房兼乐器, }
+学生服务中心: { 台球, 健身房, }
+徐汇校区体育馆: { 健身房, 羽毛球, 乒乓球, }
+气膜体育中心: { 羽毛球, 篮球, }
+南区体育馆: { 乒乓球, 排球, 篮球, }
+胡法光体育场: { 舞蹈, }
+霍英东体育中心: { 羽毛球, 篮球, 健身房, }
+致远游泳馆东侧足球场: { 足球, }
+笼式足球场: { 足球, }
+子衿街南侧网球场: { 网球, }
+东区网球场: { 网球, }
+
+>>> python3 sport.py -d 6 -t 20 -v 子衿街学生活动中心 -i 健身房
+SJTUSport initialize successfully
+Captcha value: nsgr
+Login successfully
+Order committed: 子衿街学生活动中心-健身房 at 20:00 on 20XX-XX-XX
+Order successfully
+
+>>> python3 sport.py -d 5 -t 7 -v 子衿街学生活动中心 -i 钢琴
+SJTUSport initialize successfully
+Captcha value: fmfkk
+Login successfully
+No seats left in 子衿街学生活动中心-钢琴 at 7:00 on 20XX-XX-XX
+```
 
 ### 注
 该程序为本人学习selenium心血来潮之作，定位元素的条件较为松散，不保证运行效率与准确性，使用时请自行注意。

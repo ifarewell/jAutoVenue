@@ -174,16 +174,17 @@ def main(argv):
     venue = '子衿街学生活动中心'
     venueItem = '健身房'
     startTime = 20
+    deltaDays = 7
     try:
-        opts, arg= getopt.getopt(argv,'hi:t:v:',['help','item=','time=','venue='])
+        opts, arg= getopt.getopt(argv,'d:hi:t:v:',['day=','help','item=','time=','venue='])
     except getopt.GetoptError:
         print('Error: sport.py -i <venue item name> -l (list venues and venue items) -t <startTime ranging from 7 to 21> -v <venue name>')
         print('   or: sport.py --item=<venue item name> --list (list venues and venue items) --time=<startTime ranging from 7 to 21> --venue=<venue name>')
     
     for opt, arg in opts:
         if opt in ('-h','--help'):
-            print('sport.py -i <venue item name> -t <startTime ranging from 7 to 21> -v <venue name>')
-            print('or: sport.py --item=<venue item name> --time=<startTime ranging from 7 to 21> --venue=<venue name>')
+            print('sport.py -d <delta days from today ranging from 0 to 7> -i <venue item name> -t <startTime ranging from 7 to 21> -v <venue name>')
+            print('or: sport.py --day=<delta days from today ranging from 0 to 7> --item=<venue item name> --time=<startTime ranging from 7 to 21> --venue=<venue name>')
             print('venue-venueItem list:')
             for key in venueTabLists.keys():
                 print(key,end=': { ')
@@ -191,6 +192,8 @@ def main(argv):
                     print(subkey,end=', ')
                 print('}')
             sys.exit()
+        elif opt in ('-d','--day'):
+            deltaDays = eval(arg)
         elif opt in ('-i','--item'):
             venueItem = arg
         elif opt in ('-t','--time'):
@@ -198,7 +201,7 @@ def main(argv):
         elif opt in ('-v','--venue'):
             venue = arg
             
-    sport = SJTUSport(startTime=startTime, venue=venue, venueItem=venueItem)
+    sport = SJTUSport(startTime=startTime, venue=venue, venueItem=venueItem, deltaDays=deltaDays)
     if sport.login() == 1:
         logging.info("Login successfully")
         print("Login successfully!")
