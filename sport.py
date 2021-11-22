@@ -5,16 +5,20 @@ from config import account
 from SJTUVenueTabLists import venueTabLists
 from PIL import Image
 import requests
+import shutil
 import os
 import datetime
 import logging
 import json
+import sys
+import getopt
 from io import BytesIO
 from time import sleep
 
 captchaFileName = 'captcha.png'
 currentPath = os.path.dirname(os.path.abspath(__file__))
 captPath = os.path.join(currentPath, captchaFileName)
+captRecordPath = os.path.join(currentPath,'captchaRecord/')
 logfilePath = os.path.join(currentPath, "sport.log")
 
 
@@ -67,23 +71,16 @@ class SJTUSport(object):
                     assert warnInfo[0].text != '请正确填写你的用户名和密码，注意：密码是区分大小写的', 'Please check config.py for your jaccount username and password.'
                     logging.error(warnInfo[0].text)
                     print(warnInfo[0].text)
+                    shutil.copy(captPath,captRecordPath+captchaVal+'.png')
                 userInput = self.driver.find_element_by_id('user')
                 userInput.send_keys(self.usr)
                 passwdInput = self.driver.find_element_by_id('pass')
                 passwdInput.send_keys(self.psw)
-
-                # Get the captcha by cropping the website screenshot
-                # If not in headless mode, zoom level should be set to 100%
-                imgByteArr = self.driver.get_screenshot_as_png()
                 captcha = self.driver.find_element_by_id('captcha-img')
+                imgByteArr = captcha.screenshot_as_png
                 imgByteArr2 = BytesIO(imgByteArr)
                 img = Image.open(imgByteArr2)
-                left = captcha.location['x']
-                top = captcha.location['y']
-                right = left + captcha.size['width']
-                bottom = top + captcha.size['height']
-                img = img.crop((left, top, right, bottom))
-                img.save(captchaFileName)
+                img.save(captPath)
                 captchaVal = captcha_rec(img)
                 logging.info("Captcha value: " + captchaVal)
                 print("Captcha value: " + captchaVal)
@@ -172,17 +169,36 @@ class SJTUSport(object):
     def shutDown(self):
         self.driver.quit()
 
-logging.basicConfig(
-    filename=logfilePath,
-    level='INFO',
-    format='%(asctime)s  %(filename)s : %(levelname)s  %(message)s',
-    datefmt='%Y-%m-%d %A %H:%M:%S',
-)
-logging.info("=================================")
-logging.info("Log Started")
 
-if __name__ == "__main__":
-    sport = SJTUSport(startTime=20, venue='子衿街学生活动中心', venueItem='健身房')
+def main(argv):
+    venue = '子衿街学生活动中心'
+    venueItem = '健身房'
+    startTime = 20
+    try:
+        opts, arg= getopt.getopt(argv,'hi:t:v:',['help','item=','time=','venue='])
+    except getopt.GetoptError:
+        print('Error: sport.py -i <venue item name> -l (list venues and venue items) -t <startTime ranging from 7 to 21> -v <venue name>')
+        print('   or: sport.py --item=<venue item name> --list (list venues and venue items) --time=<startTime ranging from 7 to 21> --venue=<venue name>')
+    
+    for opt, arg in opts:
+        if opt in ('-h','--help'):
+            print('sport.py -i <venue item name> -t <startTime ranging from 7 to 21> -v <venue name>')
+            print('or: sport.py --item=<venue item name> --time=<startTime ranging from 7 to 21> --venue=<venue name>')
+            print('venue-venueItem list:')
+            for key in venueTabLists.keys():
+                print(key,end=': { ')
+                for subkey in venueTabLists[key].keys():
+                    print(subkey,end=', ')
+                print('}')
+            sys.exit()
+        elif opt in ('-i','--item'):
+            venueItem = arg
+        elif opt in ('-t','--time'):
+            startTime = eval(arg)
+        elif opt in ('-v','--venue'):
+            venue = arg
+            
+    sport = SJTUSport(startTime=startTime, venue=venue, venueItem=venueItem)
     if sport.login() == 1:
         logging.info("Login successfully")
         print("Login successfully!")
@@ -196,3 +212,14 @@ if __name__ == "__main__":
         sport.shutDown()
         os._exit(0)
     sport.shutDown()
+
+if __name__ == "__main__":
+    logging.basicConfig(
+        filename=logfilePath,
+        level='INFO',
+        format='%(asctime)s  %(filename)s : %(levelname)s  %(message)s',
+        datefmt='%Y-%m-%d %A %H:%M:%S',
+    )
+    logging.info("=================================")
+    logging.info("Log Started")
+    main(sys.argv[1:])
