@@ -44,7 +44,6 @@ class SJTUSport(object):
                  startTime: int=20):
         self.options = Options()
         self.options.headless = True
-        self.options.add_argument('--blink-settings=imagesEnabled=false')
         self.driver = webdriver.Firefox(options=self.options)
         self.driver.get('https://sports.sjtu.edu.cn')
         self.usr = account['username']
